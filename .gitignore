@@ -6,6 +6,7 @@
 # Python
 __pycache__/
 *.pyc
+.venv/
 
 # Local app config/output (created at runtime next to the exe or project root)
 jobs/

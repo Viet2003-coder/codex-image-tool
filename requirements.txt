@@ -1,0 +1,8 @@
+pillow==12.3.0
+numpy==2.5.1
+openpyxl==3.1.5
+playsound==1.2.2
+requests==2.34.2
+ttkbootstrap==2.2.6
+win11toast==0.36.3
+pyinstaller==6.22.3
