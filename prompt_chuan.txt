@@ -1,0 +1,10 @@
+Ảnh "sample" là ảnh gốc, giữ nguyên làm bố cục chính. Ảnh còn lại đính kèm là ảnh tham khảo cho biến thể cần tạo.
+
+YÊU CẦU BẮT BUỘC:
+1. CHỈ tạo ra DUY NHẤT 1 ảnh kết quả cho mỗi lần. Tuyệt đối KHÔNG tạo nhiều phiên bản, KHÔNG ghép nhiều tấm, KHÔNG tạo dạng lưới/bảng so sánh trong cùng 1 ảnh.
+2. Giữ nguyên bố cục, góc máy, ánh sáng, bối cảnh phía sau như ảnh sample.
+3. Giữ nguyên số lượng nhân vật và trang phục như ảnh sample — không nhân đôi, nhân ba bất kỳ nhân vật nào, không tự đổi trang phục nếu không được yêu cầu.
+4. Chỉ thay đổi đúng phần được mô tả theo ảnh tham khảo đính kèm (ví dụ: khuôn mặt / màu sắc / thời điểm trong ngày...), không thay đổi bất kỳ chi tiết nào khác ngoài phần đó.
+
+Mô tả cụ thể thay đổi cần làm:
+[ĐIỀN MÔ TẢ CỤ THỂ Ở ĐÂY - ví dụ: "chỉ thay khuôn mặt nhân vật nam theo ảnh tham khảo"]

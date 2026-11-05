@@ -1,0 +1,17 @@
+# Build artifacts (regenerate via `pyinstaller *.spec`)
+/dist/
+/build/
+*.rar
+
+# Python
+__pycache__/
+*.pyc
+
+# Local app config/output (created at runtime next to the exe or project root)
+jobs/
+*.json
+accounts.txt
+
+# Editor/OS
+.vscode/
+Thumbs.db

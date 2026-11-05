@@ -1,0 +1,11 @@
+Ảnh "sample" là ảnh gốc duy nhất cần giữ nguyên. Ảnh còn lại đính kèm chỉ là ảnh tham khảo khuôn mặt của 1 người cần thay vào.
+
+YÊU CẦU BẮT BUỘC:
+1. Chỉ tạo ra DUY NHẤT 1 ảnh kết quả. Tuyệt đối KHÔNG tạo nhiều bản sao, KHÔNG ghép nhiều tấm, KHÔNG tạo dạng lưới/bảng so sánh trong cùng 1 ảnh.
+2. Ảnh kết quả chỉ được chứa đúng 2 người (1 nam, 1 nữ) như ảnh sample — không được nhân đôi, nhân ba bất kỳ nhân vật nào.
+3. Giữ nguyên 100% bối cảnh: đền/tháp phía sau, ánh sáng đèn, mặt trăng, sông nước, đèn hoa xung quanh — y hệt ảnh sample.
+4. Giữ nguyên 100% trang phục: màu sắc, kiểu dáng, hoa văn của cả vest/áo nam và váy/lehenga nữ — y hệt ảnh sample. Không đổi màu, không đổi kiểu trang phục.
+5. Giữ nguyên tư thế, dáng đứng, góc máy, khung hình như ảnh sample.
+6. CHỈ thay đổi duy nhất khuôn mặt của nhân vật theo khuôn mặt trong ảnh tham khảo đính kèm. Không thay đổi bất kỳ chi tiết nào khác ngoài khuôn mặt.
+
+Nếu không chắc chắn giữ được đúng bối cảnh/trang phục gốc, hãy ưu tiên giữ nguyên ảnh sample càng nhiều càng tốt và chỉ chỉnh sửa phần khuôn mặt.
