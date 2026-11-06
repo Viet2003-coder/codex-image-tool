@@ -643,22 +643,23 @@ def _probe_duration(path: Path) -> float:
 
 def overlay_flying_logo(video_in: Path, logo_path: Path, out_path: Path,
                          opacity: float = 0.15) -> None:
-    """Ghép logo bay (có kênh alpha) chạy lặp lại xuyên suốt video_in. Video gốc không có audio."""
+    """Ghép logo bay (có kênh alpha) chạy lặp lại xuyên suốt video_in. Video gốc không có audio.
+
+    Lặp logo bằng `-stream_loop -1` trên INPUT (ffmpeg tự demux/decode lại từ đầu) thay
+    vì filter `loop` (phải CACHE sẵn toàn bộ N frame đã decode ở dạng RGBA vào RAM - mỗi
+    frame 1080x1920 yuva420p ~5MB, cache ~150 frame tốn ~750MB/process). Cache này nhân
+    theo số video chạy song song (workers) nên dễ gây lỗi ffmpeg "Cannot allocate memory"
+    khi chạy nhiều video cùng lúc. -stream_loop không cache gì, tốn RAM gần như hằng số."""
     main_dur = _probe_duration(video_in)
-    logo_dur = _probe_duration(logo_path)
-    loop_count = max(1, math.ceil(main_dur / logo_dur))
-    # size = đúng số frame của logo gốc (không đặt số khổng lồ) để tránh ffmpeg
-    # cache quá nhiều frame vào RAM dẫn tới tràn bộ nhớ (malloc failed trong x264).
-    logo_frame_count = max(1, math.ceil(logo_dur * FPS))
 
     filter_complex = (
         f"[1:v]scale={W}:{H},format=yuva420p,colorchannelmixer=aa={opacity},"
-        f"loop=loop={loop_count - 1}:size={logo_frame_count}:start=0,"
         f"trim=duration={main_dur:.3f},setpts=PTS-STARTPTS[logo];"
         f"[0:v][logo]overlay=0:0:format=auto[vout]"
     )
     _run_ffmpeg([
-        "-i", str(video_in), "-i", str(logo_path),
+        "-i", str(video_in),
+        "-stream_loop", "-1", "-i", str(logo_path),
         "-filter_complex", filter_complex,
         "-map", "[vout]", "-r", str(FPS), "-pix_fmt", "yuv420p",
         "-c:v", "libx264", "-crf", "20", str(out_path),

@@ -370,8 +370,14 @@ def run_task(codex_bin: str, task: dict, on_log=None, force: bool = False, muse_
         produced, limited, detail = call_codex(
             codex_bin, task["images"], task["prompt"], on_log=lambda m: log(m), codex_home=codex_home
         )
-        if limited and not produced:
-            log(f"⚠️ CÓ THỂ ĐÃ HẾT LIMIT (tài khoản: {account_label(codex_home)}): {detail[:300]}")
+        if not produced:
+            if limited:
+                log(f"⚠️ CÓ THỂ ĐÃ HẾT LIMIT (tài khoản: {account_label(codex_home)}): {detail[:300]}")
+            elif detail:
+                log(f"❌ LỖI GEN ẢNH (tài khoản: {account_label(codex_home)}): {detail[:300]}")
+            else:
+                log(f"❌ LỖI GEN ẢNH (tài khoản: {account_label(codex_home)}): không rõ lý do "
+                    f"(Codex không trả về ảnh nào).")
 
     saved = []
     for idx, item in enumerate(produced, start=1):

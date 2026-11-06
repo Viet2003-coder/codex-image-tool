@@ -95,6 +95,8 @@ def main() -> None:
     healthy_accounts = list(accounts)
     tried_accounts: dict[int, set] = {}
     reported_limited: set = set()
+    MAX_ATTEMPTS = 3
+    attempt_count: dict[int, int] = {}
 
     with ThreadPoolExecutor(max_workers=max_workers) as pool:
         task_of = {
@@ -112,32 +114,49 @@ def main() -> None:
                     log(t["label"], f"LỖI: {exc}")
                     r = {"label": t["label"], "ok": False, "images": [], "limited": False, "codex_home": None}
 
-                if r.get("limited") and t.get("backend") == "muse":
-                    log(t["label"], "⚠️ MUSE có thể đã hết limit toàn bộ tài khoản, bỏ qua ảnh này "
-                                     "(mở trình quản lý tài khoản Muse để kiểm tra/bật tài khoản khác).")
-                elif r.get("limited"):
-                    bad_acc = r.get("codex_home")
-                    if bad_acc in healthy_accounts:
-                        healthy_accounts.remove(bad_acc)
-                        key = str(bad_acc)
-                        if key not in reported_limited:
-                            reported_limited.add(key)
-                            log(t["label"], f"⚠️ Tài khoản '{core.account_label(bad_acc)}' có vẻ đã hết limit, "
-                                            "tạm loại khỏi vòng xoay cho lượt chạy này.")
-                    tried = tried_accounts.setdefault(id(t), set())
-                    if bad_acc is not None:
-                        tried.add(bad_acc)
-                    remaining = [a for a in healthy_accounts if a not in tried]
-                    if remaining:
-                        new_acc = remaining[0]
-                        t["codex_home"] = new_acc
-                        log(t["label"], f"🔁 Tự động chạy lại bằng tài khoản khác: {core.account_label(new_acc)}")
+                if not r.get("ok"):
+                    task_key = id(t)
+                    attempts = attempt_count.get(task_key, 1)
+                    exhausted_accounts = False
+                    retry_acc = None
+
+                    if r.get("limited") and t.get("backend") == "muse":
+                        log(t["label"], "⚠️ MUSE có thể đã hết limit toàn bộ tài khoản, sẽ tự thử lại "
+                                         "(mở trình quản lý tài khoản Muse để kiểm tra/bật tài khoản khác).")
+                    elif r.get("limited"):
+                        bad_acc = r.get("codex_home")
+                        if bad_acc in healthy_accounts:
+                            healthy_accounts.remove(bad_acc)
+                            rkey = str(bad_acc)
+                            if rkey not in reported_limited:
+                                reported_limited.add(rkey)
+                                log(t["label"], f"⚠️ Tài khoản '{core.account_label(bad_acc)}' có vẻ đã hết limit, "
+                                                "tạm loại khỏi vòng xoay cho lượt chạy này.")
+                        tried = tried_accounts.setdefault(task_key, set())
+                        if bad_acc is not None:
+                            tried.add(bad_acc)
+                        remaining = [a for a in healthy_accounts if a not in tried]
+                        if remaining:
+                            retry_acc = remaining[0]
+                        else:
+                            exhausted_accounts = True
+
+                    if exhausted_accounts:
+                        log(t["label"], "❌ Không còn tài khoản nào khác khả dụng, bỏ qua ảnh này.")
+                    elif attempts < MAX_ATTEMPTS:
+                        attempt_count[task_key] = attempts + 1
+                        if retry_acc is not None:
+                            t["codex_home"] = retry_acc
+                            log(t["label"], f"🔁 Tự động chạy lại (lần {attempts + 1}/{MAX_ATTEMPTS}) "
+                                            f"bằng tài khoản khác: {core.account_label(retry_acc)}")
+                        else:
+                            log(t["label"], f"🔁 Tự động chạy lại (lần {attempts + 1}/{MAX_ATTEMPTS})...")
                         new_fut = pool.submit(core.run_task, CODEX_BIN, t, log, False, muse_config)
                         task_of[new_fut] = t
                         pending.add(new_fut)
                         continue
                     else:
-                        log(t["label"], "❌ Không còn tài khoản nào khác khả dụng, bỏ qua ảnh này.")
+                        log(t["label"], f"❌ Bỏ qua sau {MAX_ATTEMPTS} lần lỗi liên tiếp.")
 
                 results.append(r)
 
